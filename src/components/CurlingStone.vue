@@ -1,6 +1,6 @@
 <template>
     <g>
-        <circle ref="ball" :cx="x" :cy="y" :r="radius" :fill="color" />
+        <circle ref="ball" :r="radius" :fill="color" />
     </g>
 </template>
 
@@ -10,14 +10,6 @@ import * as d3 from 'd3';
 export default {
     name: "CurlingStone",
     props: {
-        x: {
-            type: Number,
-            required: true
-        },
-        y: {
-            type: Number,
-            required: true
-        },
         radius: {
             type: Number,
             default: 8
@@ -35,6 +27,11 @@ export default {
             required: true,
         },
     },
+    data() {
+        return {
+            replayIndex: 0,
+        };
+    },
     mounted() {
         this.trajectoryDataCache = []
         this.ball = d3.select(this.$refs.ball)
@@ -51,13 +48,27 @@ export default {
             .y(d => (d.y));
     },
     methods: {
+        replay(trajectoryData, speed) {
+            if (this.replayIndex >= trajectoryData.length) {
+                this.replayIndex = 0
+                return
+            } 
+            const point = trajectoryData[this.replayIndex];
+            this.interpolatePlayFrame(point, speed, () => {
+                ++this.replayIndex;
+                this.replay(trajectoryData, speed);
+            });
+        },
 
-        interpolatePlayFrame(point, replayCallback) {
+        interpolatePlayFrame(point, speed, replayCallback) {
             const previousPoint = this.trajectoryDataCache.at(-1);
-            const interval = 30; // 每 20 ms 生成一个新位置点
+            const interval = 10; // 每 20 ms 生成一个新位置点
             const steps = previousPoint ? Math.ceil((point.time - previousPoint.time) / interval) : 1;
+
             let i = 1;
+
             const interpolatePlayFrameCallback = () => {
+
                 if (i > steps) {
                     if (replayCallback) replayCallback();
                     return;
@@ -71,20 +82,20 @@ export default {
                 this.playFrame({
                     x: interpolatedX,
                     y: interpolatedY,
-                    time: previousPoint ? (previousPoint.time + 20 * i) : point.time,
-                }, interpolatePlayFrameCallback);
+                    time: previousPoint ? (previousPoint.time + interval * i) : point.time,
+                }, speed, interpolatePlayFrameCallback);
             };
 
             // 开始启动插值动画
             interpolatePlayFrameCallback();
         },
 
-        playFrame(point, callback) {
+        playFrame(point, speed, callback) {
 
-            console.log(point.x, point.y, point.time)
+            // console.log(point.x, point.y, point.time)
             const previousPoint = this.trajectoryDataCache.at(-1);
             let duration = 0;
-            const delay = 13; // delay 8 个毫秒, 是的动画更加平顺
+            const delay = 0; // delay 8 个毫秒, 是的动画更加平顺
 
             if (previousPoint) {
                 duration = point.time - previousPoint.time;
@@ -99,13 +110,13 @@ export default {
                 this.shouldZoomOut = false;
                 this.$emit("zoom", "out")
             }
-
+            this.ball.interrupt()
             if ((point.y) > this.hogLine1 && (point.y) < this.hogLine2) {
                 this.shouldZoomIn = true;
                 this.ball
                     .transition()
-                    .delay(delay)
-                    .duration(duration - delay)
+                    .delay(delay * speed)
+                    .duration((duration - delay) * speed)
                     .ease(d3.easeCubicInOut)
                     .attr("cx", (point.x))
                     .attr("cy", (point.y))
@@ -122,8 +133,8 @@ export default {
                 this.shouldZoomOut = true;
                 this.ball
                     .transition()
-                    .delay(delay)
-                    .duration(duration - delay)
+                    .delay(delay * speed)
+                    .duration((duration - delay) * speed)
                     .ease(d3.easeCubicInOut)
                     .attr("cx", (point.x))
                     .attr("cy", (point.y))

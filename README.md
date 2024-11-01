@@ -7,12 +7,19 @@ npm install d3
 npm run serve
 ```
 
-## 播放一整条轨迹
+## CurlingLane 冰壶赛道
 
- <CurlingRink ref="curlingRink" rinkWidthInPixel="300"></CurlingRink>
-this.$refs.curlingRink.replay(trajectory)
+1. 轨迹重放 speed为0, 将恢复轨迹最后状态
+this.$refs.curlingLane.replay(trajectory, speed)
 
-## 接收websocket消息, 每次收到一个坐标点
+2. 接收websocket坐标点, 在websocket消息收听函数中调用下面API
+this.$refs.curlingLane.playFrame(point, speed)
 
- <CurlingRink ref="curlingRink" rinkWidthInPixel="300"></CurlingRink>
-this.$refs.curlingRink.payFrame(point)
+3. 标签说明
+* curlingNumber 小球数量
+* settingLaneWidthInPixel 轨道宽度设定, 轨道长度自动等比计算
+* settingLaneWidthInPixel 如果不设置, 将会开启预览模式, 届时, 轨道长度等于100vh, 宽度自动等比计算
+* 是否使用摄像头,进行小球跟踪和缩放等功能. 
+
+<curling-lane ref="curlingLane0" refName="curlingLane0" :curlingNumer=16 :settingLaneWidthInPixel=300 :cameraEnable="true"></curling-lane>
+
