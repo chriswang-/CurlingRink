@@ -7,9 +7,14 @@ npm install d3
 npm run serve
 ```
 ## 四条赛道和一个预览
-
+```html
+      <curling-lane ref="curlingLane0" refName="curlingLane0" :curlingNumer=16 :settingLaneWidthInPixel=300 :cameraEnable="true"></curling-lane>
+      <curling-lane ref="curlingLane1" refName="curlingLane1" :curlingNumer=16 :settingLaneWidthInPixel=300 :cameraEnable="true"></curling-lane>
+      <curling-lane ref="curlingLane2" refName="curlingLane2" :curlingNumer=16 :settingLaneWidthInPixel=300 :cameraEnable="true"></curling-lane>
+      <curling-lane ref="curlingLane3" refName="curlingLane3" :curlingNumer=16 :settingLaneWidthInPixel=300 :cameraEnable="true"></curling-lane>
+      <curling-lane ref="curlingLane4" refName="curlingLane4" :curlingNumer=16 :cameraEnable="false"></curling-lane>
+```
 ![alt text](public/1730487028260.jpg)
-
 
 ## CurlingLane 冰壶赛道
 
