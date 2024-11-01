@@ -3,22 +3,16 @@
 ## Project setup
 ```
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
+npm install d3
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## 播放一整条轨迹
 
-### Lints and fixes files
-```
-npm run lint
-```
+ <CurlingRink ref="curlingRink" rinkWidthInPixel="300"></CurlingRink>
+this.$refs.curlingRink.replay(trajectory)
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 接收websocket消息, 每次收到一个坐标点
+
+ <CurlingRink ref="curlingRink" rinkWidthInPixel="300"></CurlingRink>
+this.$refs.curlingRink.payFrame(point)
