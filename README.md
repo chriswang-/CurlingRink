@@ -1,4 +1,4 @@
-# CurlingRink
+# 冰壶轨迹 Trajectory
 
 ## Project setup
 ```

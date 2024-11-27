@@ -52,8 +52,9 @@ export default {
             if (this.replayIndex >= trajectoryData.length) {
                 this.replayIndex = 0
                 return
-            } 
+            }
             const point = trajectoryData[this.replayIndex];
+
             this.interpolatePlayFrame(point, speed, () => {
                 ++this.replayIndex;
                 this.replay(trajectoryData, speed);
@@ -68,7 +69,9 @@ export default {
             let i = 1;
 
             const interpolatePlayFrameCallback = () => {
-
+                if (i == steps) { // 识别该球并不是插值
+                    point.interpolate = false
+                }
                 if (i > steps) {
                     if (replayCallback) replayCallback();
                     return;
@@ -83,6 +86,7 @@ export default {
                     x: interpolatedX,
                     y: interpolatedY,
                     time: previousPoint ? (previousPoint.time + interval * i) : point.time,
+                    interpolate:  point.interpolate == false ? point.interpolate: true
                 }, speed, interpolatePlayFrameCallback);
             };
 
@@ -91,7 +95,7 @@ export default {
         },
 
         playFrame(point, speed, callback) {
-
+            console.log(JSON.stringify(point))
             // console.log(point.x, point.y, point.time)
             const previousPoint = this.trajectoryDataCache.at(-1);
             let duration = 0;
